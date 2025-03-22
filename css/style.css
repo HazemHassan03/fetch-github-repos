@@ -91,8 +91,15 @@ input {
   -ms-transition: background-color var(--transition);
   -o-transition: background-color var(--transition);
 }
-.input-container form input[type="submit"]:hover {
-  background-color: var(--color1-alt);
+@media (hover: hover) {
+  .input-container form input[type="submit"]:hover {
+    background-color: var(--color1-alt);
+  }
+}
+@media (hover: none) {
+  .input-container form input[type="submit"]:active {
+    background-color: var(--color1-alt);
+  }
 }
 .input-container form input[type="submit"]:disabled {
   background-color: rgba(255, 77, 77, 0.5);
@@ -331,6 +338,7 @@ input {
 }
 .messages .message {
   display: none;
+  line-height: 1.6;
 }
 .messages .message.active {
   display: block;
