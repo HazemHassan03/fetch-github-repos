@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Fetch all public GitHub repositories by enter a username" />
+    <title>Fetch GitHub Repositories</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/fontawesome.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet" />
+    <link rel="shortcut icon" href="https://i.ibb.co/6Rn5WVg/lOGO-1.png" type="image/x-icon" />
+  </head>
+  <body>
+    <div class="input-container container">
+      <form>
+        <input type="text" name="username" id="username" placeholder="Enter The Username" />
+        <input type="submit" value="Show" />
+      </form>
+      <a class="copyright" href="https://www.linkedin.com/in/hazemhassan03/" target="_blank"><img src="https://i.ibb.co/2ZCCRcb/Copyright.png" alt="My Logo" /></a>
+    </div>
+    <div class="repos-container"></div>
+    <div class="loading">
+      <div class="one"></div>
+      <div class="two"></div>
+      <div class="three"></div>
+    </div>
+    <div class="messages">
+      <p class="message error red">Something went wrong. Please try again.</p>
+      <p class="message not-found red">The username is not found. Try another one.</p>
+      <p class="message limited">You have reached the maximum number of attempts. Please try again later.</p>
+      <p class="message no-repos">No public repositories found for this username.</p>
+    </div>
+    <script src="js/script.js"></script>
+  </body>
+</html>
