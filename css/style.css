@@ -105,6 +105,37 @@ input {
   background-color: rgba(255, 77, 77, 0.5);
   cursor: not-allowed;
 }
+.input-container .suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+.input-container .suggestions .suggestion {
+  background-color: #eee;
+  padding: 5px 10px;
+  border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  cursor: pointer;
+  transition: background-color var(--transition);
+  -webkit-transition: background-color var(--transition);
+  -moz-transition: background-color var(--transition);
+  -ms-transition: background-color var(--transition);
+  -o-transition: background-color var(--transition);
+}
+@media (hover: hover) {
+  .input-container .suggestions .suggestion:hover {
+    background-color: #ddd;
+  }
+}
+@media (hover: none) {
+  .input-container .suggestions .suggestion:active {
+    background-color: #ddd;
+  }
+}
 .user-card {
   display: grid;
   grid-template-columns: 1fr;
@@ -331,18 +362,16 @@ input {
   }
 }
 
-.messages {
+.message {
   color: white;
   font-size: 18px;
   text-align: center;
-}
-.messages .message {
   display: none;
   line-height: 1.6;
 }
-.messages .message.active {
+.message.active {
   display: block;
 }
-.messages .message.red {
+.message.error {
   color: var(--color1);
 }

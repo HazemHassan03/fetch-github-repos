@@ -1,26 +1,44 @@
 const form = document.querySelector("form"),
   usernameInput = document.querySelector("input#username"),
   submit = document.querySelector("input[type=submit]"),
+  suggestionsCon = document.querySelector(".suggestions"),
   reposCon = document.querySelector(".repos-container"),
-  messages = document.querySelectorAll(".messages .message"),
+  messageEl = document.querySelector(".message"),
   loadingEl = document.querySelector(".loading");
 
-usernameInput.value = "HazemHassan03";
-usernameInput.focus();
+const suggestions = ["HazemHassan03", "torvalds", "OsamaElzero", "yyx990803", "jeresig", "angular", "vuejs", "nodejs", "ElzeroWebSchool", "jquery"];
+for (let i = 0; i < suggestions.length; i++) {
+  const random = Math.floor(Math.random() * suggestions.length);
+  [suggestions[random], suggestions[i]] = [suggestions[i], suggestions[random]];
+}
+suggestions.forEach((suggestion) => {
+  const suggestionEl = document.createElement("span");
+  const suggestionText = document.createTextNode(suggestion);
+  suggestionEl.appendChild(suggestionText);
+  suggestionEl.classList.add("suggestion");
+  suggestionsCon.appendChild(suggestionEl);
+});
+const suggestionEls = document.querySelectorAll(".suggestion");
+suggestionEls.forEach((suggestion) => {
+  suggestion.addEventListener("click", () => {
+    usernameInput.value = suggestion.textContent;
+    usernameInput.focus();
+  });
+});
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
-  while (reposCon.firstChild) {
-    reposCon.removeChild(reposCon.firstChild);
-  }
-  messages.forEach((message) => message.classList.remove("active"));
   if (usernameInput.value) {
+    while (reposCon.firstChild) {
+      reposCon.removeChild(reposCon.firstChild);
+    }
+    messageEl.classList.remove("active");
     submit.disabled = true;
     loadingEl.classList.add("active");
     try {
       await fetchUser(usernameInput.value);
     } catch {
-      showMessage("error");
+      showMessage("Something went wrong. Please try again.", true);
     }
     loadingEl.classList.remove("active");
     submit.disabled = false;
@@ -29,11 +47,16 @@ form.addEventListener("submit", async (e) => {
     usernameInput.addEventListener("input", () => {
       usernameInput.classList.remove("invalid");
     });
+    usernameInput.addEventListener("focus", () => {
+      usernameInput.classList.remove("invalid");
+    });
   }
 });
 
-function showMessage(type) {
-  document.querySelector(`.${type}`).classList.add("active");
+function showMessage(message, error) {
+  messageEl.textContent = message;
+  if (error) messageEl.classList.add("error");
+  messageEl.classList.add("active");
 }
 
 async function fetchUser(username) {
@@ -45,17 +68,17 @@ async function fetchUser(username) {
       try {
         await fetchRepos(usernameInput.value);
       } catch {
-        showMessage("error");
+        showMessage("Something went wrong. Please try again.", true);
       }
     } else if (response.status == 404) {
-      showMessage("not-found");
+      showMessage("The username is not found. Try another one.");
     } else if (response.status == 403) {
-      showMessage("limited");
+      showMessage("You have reached the maximum number of attempts. Please try again later.");
     } else {
-      showMessage("error");
+      showMessage("Something went wrong. Please try again.", true);
     }
   } catch {
-    showMessage("error");
+    showMessage("Something went wrong. Please try again.", true);
   }
 }
 
@@ -65,17 +88,17 @@ async function fetchRepos(username) {
     if (response.status == 200) {
       const repos = await response.json();
       if (repos.length == 0) {
-        showMessage("no-repos");
+        showMessage("No public repositories found for this username.");
       } else {
         showRepos(repos);
       }
     } else if (response.status == 403) {
-      showMessage("limited");
+      showMessage("You have reached the maximum number of attempts. Please try again later.");
     } else {
-      showMessage("error");
+      showMessage("Something went wrong. Please try again.", true);
     }
   } catch {
-    showMessage("error");
+    showMessage("Something went wrong. Please try again.", true);
   }
 }
 
@@ -89,6 +112,7 @@ function showUser(user) {
   avatarImg.src = user.avatar_url;
   avatarImg.alt = "user-avatar";
   avatarDiv.appendChild(avatarImg);
+  userCard.appendChild(avatarDiv);
 
   if (user.name) {
     const nameElement = document.createElement("h1");
@@ -105,6 +129,7 @@ function showUser(user) {
   typeIcon.classList.add("fa-brands", "fa-github");
   typeElement.appendChild(typeIcon);
   typeElement.appendChild(typeText);
+  userCard.appendChild(typeElement);
 
   const followInfDiv = document.createElement("div");
   followInfDiv.classList.add("follow-inf");
@@ -137,6 +162,7 @@ function showUser(user) {
 
   followInfDiv.appendChild(followers);
   followInfDiv.appendChild(following);
+  userCard.appendChild(followInfDiv);
 
   const moreDiv = document.createElement("div");
   moreDiv.classList.add("more");
@@ -161,12 +187,7 @@ function showUser(user) {
   const profileIcon = document.createElement("i");
   profileIcon.classList.add("fa-solid", "fa-arrow-up-right-from-square");
   profileLink.appendChild(profileIcon);
-
   moreDiv.appendChild(profileLink);
-
-  userCard.appendChild(avatarDiv);
-  userCard.appendChild(typeElement);
-  userCard.appendChild(followInfDiv);
   userCard.appendChild(moreDiv);
 
   reposCon.appendChild(userCard);
@@ -181,6 +202,7 @@ function showRepos(repos) {
     nameElement.classList.add("name");
     const nameText = document.createTextNode(repo.name);
     nameElement.appendChild(nameText);
+    repoDiv.appendChild(nameElement);
 
     const repoInfDiv = document.createElement("div");
     repoInfDiv.classList.add("repo-inf");
@@ -201,6 +223,7 @@ function showRepos(repos) {
 
     repoInfDiv.appendChild(starsSpan);
     repoInfDiv.appendChild(forksSpan);
+    repoDiv.appendChild(repoInfDiv);
 
     const createDateDiv = document.createElement("div");
     createDateDiv.classList.add("create-date");
@@ -212,6 +235,7 @@ function showRepos(repos) {
     createDateValue.appendChild(document.createTextNode(formatDate(repo.created_at)));
     createDateDiv.appendChild(createDateTitle);
     createDateDiv.appendChild(createDateValue);
+    repoDiv.appendChild(createDateDiv);
 
     const latestUpdateDiv = document.createElement("div");
     latestUpdateDiv.classList.add("latest-update");
@@ -223,6 +247,7 @@ function showRepos(repos) {
     latestUpdateValue.appendChild(document.createTextNode(formatDate(repo.updated_at)));
     latestUpdateDiv.appendChild(latestUpdateTitle);
     latestUpdateDiv.appendChild(latestUpdateValue);
+    repoDiv.appendChild(latestUpdateDiv);
 
     const repoLink = document.createElement("a");
     repoLink.href = repo.html_url;
@@ -232,11 +257,6 @@ function showRepos(repos) {
     const repoLinkIcon = document.createElement("i");
     repoLinkIcon.classList.add("fa-solid", "fa-arrow-up-right-from-square");
     repoLink.appendChild(repoLinkIcon);
-
-    repoDiv.appendChild(nameElement);
-    repoDiv.appendChild(repoInfDiv);
-    repoDiv.appendChild(createDateDiv);
-    repoDiv.appendChild(latestUpdateDiv);
     repoDiv.appendChild(repoLink);
 
     reposCon.appendChild(repoDiv);
