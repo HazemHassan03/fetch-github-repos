@@ -7,10 +7,6 @@ const form = document.querySelector("form"),
   loadingEl = document.querySelector(".loading");
 
 const suggestions = ["HazemHassan03", "torvalds", "OsamaElzero", "yyx990803", "jeresig", "angular", "vuejs", "nodejs", "ElzeroWebSchool", "jquery"];
-for (let i = 0; i < suggestions.length; i++) {
-  const random = Math.floor(Math.random() * suggestions.length);
-  [suggestions[random], suggestions[i]] = [suggestions[i], suggestions[random]];
-}
 suggestions.forEach((suggestion) => {
   const suggestionEl = document.createElement("span");
   const suggestionText = document.createTextNode(suggestion);
